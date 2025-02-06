@@ -25,6 +25,8 @@ from open_webui.env import (
     AIOHTTP_CLIENT_TIMEOUT_OPENAI_MODEL_LIST,
     ENABLE_FORWARD_USER_INFO_HEADERS,
     BYPASS_MODEL_ACCESS_CONTROL,
+    OPEN_WEBUI_URL,
+    WEBUI_NAME
 )
 
 from open_webui.constants import ERROR_MESSAGES
@@ -165,11 +167,16 @@ async def update_config(
 async def speech(request: Request, user=Depends(get_verified_user)):
     idx = None
     try:
+        # Find the index of the OpenAI API base URL
         idx = request.app.state.config.OPENAI_API_BASE_URLS.index(
             "https://api.openai.com/v1"
         )
+    except ValueError:
+        raise HTTPException(status_code=401, detail=ERROR_MESSAGES.OPENAI_NOT_FOUND)
 
+        # Read the request body
         body = await request.body()
+        # Generate a unique name for the cache file
         name = hashlib.sha256(body).hexdigest()
 
         SPEECH_CACHE_DIR = Path(CACHE_DIR).joinpath("./audio/speech/")
@@ -179,12 +186,14 @@ async def speech(request: Request, user=Depends(get_verified_user)):
 
         # Check if the file already exists in the cache
         if file_path.is_file():
+            # Return the cached file
             return FileResponse(file_path)
 
         url = request.app.state.config.OPENAI_API_BASE_URLS[idx]
 
         r = None
         try:
+            # Make a POST request to the OpenAI API
             r = requests.post(
                 url=f"{url}/audio/speech",
                 data=body,
@@ -193,8 +202,8 @@ async def speech(request: Request, user=Depends(get_verified_user)):
                     "Authorization": f"Bearer {request.app.state.config.OPENAI_API_KEYS[idx]}",
                     **(
                         {
-                            "HTTP-Referer": "https://openwebui.com/",
-                            "X-Title": "Open WebUI",
+                            "HTTP-Referer": OPEN_WEBUI_URL,
+                            "X-Title": WEBUI_NAME,
                         }
                         if "openrouter.ai" in url
                         else {}
@@ -220,6 +229,7 @@ async def speech(request: Request, user=Depends(get_verified_user)):
                 for chunk in r.iter_content(chunk_size=8192):
                     f.write(chunk)
 
+            # Save the request body to a file
             with open(file_body_path, "w") as f:
                 json.dump(json.loads(body.decode("utf-8")), f)
 
@@ -240,7 +250,7 @@ async def speech(request: Request, user=Depends(get_verified_user)):
 
             raise HTTPException(
                 status_code=r.status_code if r else 500,
-                detail=detail if detail else "Open WebUI: Server Connection Error",
+                detail=detail if detail else WEBUI_NAME + ": Server Connection Error",
             )
 
     except ValueError:
@@ -481,7 +491,7 @@ async def get_models(
                 # ClientError covers all aiohttp requests issues
                 log.exception(f"Client error: {str(e)}")
                 raise HTTPException(
-                    status_code=500, detail="Open WebUI: Server Connection Error"
+                    status_code=500, detail=WEBUI_NAME + ": Server Connection Error"
                 )
             except Exception as e:
                 log.exception(f"Unexpected error: {e}")
@@ -532,7 +542,7 @@ async def verify_connection(
             # ClientError covers all aiohttp requests issues
             log.exception(f"Client error: {str(e)}")
             raise HTTPException(
-                status_code=500, detail="Open WebUI: Server Connection Error"
+                status_code=500, detail=WEBUI_NAME + ": Server Connection Error"
             )
         except Exception as e:
             log.exception(f"Unexpected error: {e}")
@@ -656,8 +666,8 @@ async def generate_chat_completion(
                 "Content-Type": "application/json",
                 **(
                     {
-                        "HTTP-Referer": "https://openwebui.com/",
-                        "X-Title": "Open WebUI",
+                        "HTTP-Referer": OPEN_WEBUI_URL,
+                        "X-Title": WEBUI_NAME,
                     }
                     if "openrouter.ai" in url
                     else {}
@@ -695,8 +705,13 @@ async def generate_chat_completion(
 
             r.raise_for_status()
             return response
+    except aiohttp.ClientError as e:
+        log.exception(f"AIOHTTP client error: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"{WEBUI_NAME}: Server Connection Error - {e}"
+        )
     except Exception as e:
-        log.exception(e)
+        log.exception(f"Unexpected error: {e}")
 
         detail = None
         if isinstance(response, dict):
@@ -707,7 +722,7 @@ async def generate_chat_completion(
 
         raise HTTPException(
             status_code=r.status if r else 500,
-            detail=detail if detail else "Open WebUI: Server Connection Error",
+            detail=detail if detail else WEBUI_NAME + ": Server Connection Error",
         )
     finally:
         if not streaming and session:
@@ -770,8 +785,13 @@ async def proxy(path: str, request: Request, user=Depends(get_verified_user)):
             response_data = await r.json()
             return response_data
 
+    except aiohttp.ClientError as e:
+        log.exception(f"AIOHTTP client error: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"{WEBUI_NAME}: Server Connection Error - {e}"
+        )
     except Exception as e:
-        log.exception(e)
+        log.exception(f"Unexpected error: {e}")
 
         detail = None
         if r is not None:
@@ -784,7 +804,7 @@ async def proxy(path: str, request: Request, user=Depends(get_verified_user)):
                 detail = f"External: {e}"
         raise HTTPException(
             status_code=r.status if r else 500,
-            detail=detail if detail else "Open WebUI: Server Connection Error",
+            detail=detail if detail else WEBUI_NAME + ": Server Connection Error",
         )
     finally:
         if not streaming and session:
