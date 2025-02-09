@@ -325,11 +325,6 @@
 						editHandler={() => {
 							goto(`/admin/functions/edit?id=${encodeURIComponent(func.id)}`);
 						}}
-						{#if CONNECT_TO_OPEN_WEBUI}
-							shareHandler={() => {
-								shareHandler(func);
-							}}
-						{/if}
 						cloneHandler={() => {
 							cloneHandler(func);
 						}}

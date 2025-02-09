@@ -340,11 +340,6 @@
 							<ModelMenu
 								user={$user}
 								{model}
-								{#if CONNECT_TO_OPEN_WEBUI}
-								shareHandler={() => {
-									shareModelHandler(model);
-								}}
-								{/if}
 								cloneHandler={() => {
 									cloneModelHandler(model);
 								}}
