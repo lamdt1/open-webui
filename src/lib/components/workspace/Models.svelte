@@ -12,6 +12,7 @@
 	const i18n = getContext('i18n');
 
 	import { WEBUI_NAME, config, mobile, models as _models, settings, user } from '$lib/stores';
+	import { CONNECT_TO_OPEN_WEBUI } from '$lib/constants';
 	import {
 		createNewModel,
 		deleteModelById,
@@ -339,9 +340,11 @@
 							<ModelMenu
 								user={$user}
 								{model}
+								{#if CONNECT_TO_OPEN_WEBUI}
 								shareHandler={() => {
 									shareModelHandler(model);
 								}}
+								{/if}
 								cloneHandler={() => {
 									cloneModelHandler(model);
 								}}
@@ -476,7 +479,7 @@
 		</div>
 	{/if}
 
-	{#if $config?.features.enable_community_sharing}
+	{#if $config?.features.enable_community_sharing && CONNECT_TO_OPEN_WEBUI}
 		<div class=" my-16">
 			<div class=" text-xl font-medium mb-1 line-clamp-1">
 				{$i18n.t('Made by OpenWebUI Community')}

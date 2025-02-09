@@ -4,6 +4,7 @@
 	const { saveAs } = fileSaver;
 
 	import { WEBUI_NAME, config, functions, models } from '$lib/stores';
+	import { CONNECT_TO_OPEN_WEBUI } from '$lib/constants';
 	import { onMount, getContext, tick } from 'svelte';
 
 	import { goto } from '$app/navigation';
@@ -324,9 +325,11 @@
 						editHandler={() => {
 							goto(`/admin/functions/edit?id=${encodeURIComponent(func.id)}`);
 						}}
-						shareHandler={() => {
-							shareHandler(func);
-						}}
+						{#if CONNECT_TO_OPEN_WEBUI}
+							shareHandler={() => {
+								shareHandler(func);
+							}}
+						{/if}
 						cloneHandler={() => {
 							cloneHandler(func);
 						}}
@@ -450,7 +453,7 @@
 	</div>
 </div>
 
-{#if $config?.features.enable_community_sharing}
+{#if $config?.features.enable_community_sharing && CONNECT_TO_OPEN_WEBUI}
 	<div class=" my-16">
 		<div class=" text-xl font-medium mb-1 line-clamp-1">
 			{$i18n.t('Made by OpenWebUI Community')}

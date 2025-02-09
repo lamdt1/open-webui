@@ -6,6 +6,7 @@
 	import { onMount, getContext } from 'svelte';
 	import { WEBUI_NAME, config, prompts, tools as _tools, user } from '$lib/stores';
 	import { createNewPrompt, deletePromptByCommand, getPrompts } from '$lib/apis/prompts';
+	import { CONNECT_TO_OPEN_WEBUI } from '$lib/constants';
 
 	import { goto } from '$app/navigation';
 	import {
@@ -330,9 +331,11 @@
 							editHandler={() => {
 								goto(`/workspace/tools/edit?id=${encodeURIComponent(tool.id)}`);
 							}}
+							{#if CONNECT_TO_OPEN_WEBUI}
 							shareHandler={() => {
 								shareHandler(tool);
 							}}
+							{/if}
 							cloneHandler={() => {
 								cloneHandler(tool);
 							}}
@@ -435,7 +438,7 @@
 		</div>
 	{/if}
 
-	{#if $config?.features.enable_community_sharing}
+	{#if $config?.features.enable_community_sharing && CONNECT_TO_OPEN_WEBUI}
 		<div class=" my-16">
 			<div class=" text-xl font-medium mb-1 line-clamp-1">
 				{$i18n.t('Made by OpenWebUI Community')}

@@ -8,6 +8,7 @@
 	const dispatch = createEventDispatcher();
 
 	import { config, user, models as _models, temporaryChatEnabled } from '$lib/stores';
+	import { CONNECT_TO_OPEN_WEBUI } from '$lib/constants';
 	import { sanitizeResponseContent, findWordIndices } from '$lib/utils';
 	import { WEBUI_BASE_URL } from '$lib/constants';
 
@@ -164,7 +165,7 @@
 							</div>
 						</Tooltip>
 
-						{#if models[selectedModelIdx]?.info?.meta?.user}
+						{#if models[selectedModelIdx]?.info?.meta?.user && CONNECT_TO_OPEN_WEBUI}
 							<div class="mt-0.5 text-sm font-normal text-gray-400 dark:text-gray-500">
 								By
 								{#if models[selectedModelIdx]?.info?.meta?.user.community}

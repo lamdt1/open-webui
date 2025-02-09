@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { getContext, onMount } from 'svelte';
 	import { models, config } from '$lib/stores';
+	import { CONNECT_TO_OPEN_WEBUI } from '$lib/constants';
 
 	import { toast } from 'svelte-sonner';
 	import { deleteSharedChatById, getChatById, shareChatById } from '$lib/apis/chats';
@@ -134,7 +135,7 @@
 				<div class="flex justify-end">
 					<div class="flex flex-col items-end space-x-1 mt-3">
 						<div class="flex gap-1">
-							{#if $config?.features.enable_community_sharing}
+							{#if $config?.features.enable_community_sharing && CONNECT_TO_OPEN_WEBUI}
 								<button
 									class="self-center flex items-center gap-1 px-3.5 py-2 text-sm font-medium bg-gray-100 hover:bg-gray-200 text-gray-800 dark:bg-gray-850 dark:text-white dark:hover:bg-gray-800 transition rounded-full"
 									type="button"

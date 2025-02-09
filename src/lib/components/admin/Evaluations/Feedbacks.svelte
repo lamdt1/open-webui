@@ -19,6 +19,7 @@
 	import Pagination from '$lib/components/common/Pagination.svelte';
 	import FeedbackMenu from './FeedbackMenu.svelte';
 	import EllipsisHorizontal from '$lib/components/icons/EllipsisHorizontal.svelte';
+	import { CONNECT_TO_OPEN_WEBUI } from '$lib/constants';
 
 	export let feedbacks = [];
 
@@ -247,7 +248,7 @@
 	{/if}
 </div>
 
-{#if feedbacks.length > 0}
+{#if feedbacks.length > 0 && CONNECT_TO_OPEN_WEBUI}
 	<div class=" flex flex-col justify-end w-full text-right gap-1">
 		<div class="line-clamp-1 text-gray-500 text-xs">
 			{$i18n.t('Help us create the best community leaderboard by sharing your feedback history!')}
