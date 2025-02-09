@@ -331,6 +331,12 @@
 							editHandler={() => {
 								goto(`/workspace/tools/edit?id=${encodeURIComponent(tool.id)}`);
 							}}
+							
+							shareHandler={() => {
+								{#if CONNECT_TO_OPEN_WEBUI}
+									shareHandler(tool);
+								{/if}
+							}}
 							cloneHandler={() => {
 								cloneHandler(tool);
 							}}
