@@ -333,9 +333,9 @@
 							}}
 							
 							shareHandler={() => {
-								{#if CONNECT_TO_OPEN_WEBUI}
+								if CONNECT_TO_OPEN_WEBUI {
 									shareHandler(tool);
-								{/if}
+								}
 							}}
 							cloneHandler={() => {
 								cloneHandler(tool);

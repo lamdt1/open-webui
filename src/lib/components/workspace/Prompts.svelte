@@ -195,9 +195,9 @@
 
 					<PromptMenu
 						shareHandler={() => {
-							{#if CONNECT_TO_OPEN_WEBUI}
+							if CONNECT_TO_OPEN_WEBUI {
 								shareHandler(prompt);
-							{/if}
+							}
 						}}
 						cloneHandler={() => {
 							cloneHandler(prompt);

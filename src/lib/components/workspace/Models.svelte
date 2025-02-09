@@ -341,9 +341,9 @@
 								user={$user}
 								{model}
 								shareHandler={() => {
-									{#if CONNECT_TO_OPEN_WEBUI}
+									if CONNECT_TO_OPEN_WEBUI {
 										shareModelHandler(model);
-									{/if}
+									}
 								}}
 								cloneHandler={() => {
 									cloneModelHandler(model);
