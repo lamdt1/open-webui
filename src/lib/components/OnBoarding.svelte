@@ -3,9 +3,7 @@
 	const i18n = getContext('i18n');
 
 	import { WEBUI_BASE_URL } from '$lib/constants';
-
 	import Marquee from './common/Marquee.svelte';
-	import SlideShow from './common/SlideShow.svelte';
 	import ArrowRightCircle from './icons/ArrowRightCircle.svelte';
 
 	export let show = true;
@@ -26,8 +24,6 @@
 				</div>
 			</div>
 		</div>
-
-		<SlideShow duration={5000} />
 
 		<div
 			class="w-full h-full absolute top-0 left-0 bg-linear-to-t from-20% from-black to-transparent"

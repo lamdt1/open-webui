@@ -600,7 +600,6 @@
 										/>
 									</svg>
 								</div>
-								<div class=" self-center">{$i18n.t('About')}</div>
 							</button>
 						{:else if tabId === 'admin'}
 							{#if $user.role === 'admin'}
@@ -686,7 +685,7 @@
 						}}
 					/>
 				{:else if selectedTab === 'about'}
-					<About />
+					
 				{/if}
 			</div>
 		</div>
