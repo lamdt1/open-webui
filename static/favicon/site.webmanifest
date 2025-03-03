@@ -1,6 +1,6 @@
 {
-  "name": "Open WebUI",
-  "short_name": "WebUI",
+  "name": "AI Gateway",
+  "short_name": "AIGW",
   "icons": [
     {
       "src": "/favicon/web-app-manifest-192x192.png",
