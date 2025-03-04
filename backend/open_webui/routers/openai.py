@@ -25,6 +25,8 @@ from open_webui.env import (
     AIOHTTP_CLIENT_TIMEOUT_OPENAI_MODEL_LIST,
     ENABLE_FORWARD_USER_INFO_HEADERS,
     BYPASS_MODEL_ACCESS_CONTROL,
+    WEBUI_NAME,
+    WEBUI_BASE_URL,
 )
 from open_webui.models.users import UserModel
 
@@ -213,8 +215,8 @@ async def speech(request: Request, user=Depends(get_verified_user)):
                     "Authorization": f"Bearer {request.app.state.config.OPENAI_API_KEYS[idx]}",
                     **(
                         {
-                            "HTTP-Referer": "https://openwebui.com/",
-                            "X-Title": "Open WebUI",
+                            "HTTP-Referer": WEBUI_BASE_URL,
+                            "X-Title": WEBUI_NAME,
                         }
                         if "openrouter.ai" in url
                         else {}
@@ -260,7 +262,7 @@ async def speech(request: Request, user=Depends(get_verified_user)):
 
             raise HTTPException(
                 status_code=r.status_code if r else 500,
-                detail=detail if detail else "Open WebUI: Server Connection Error",
+                detail=detail if detail else "AI Gateway: Server Connection Error",
             )
 
     except ValueError:
@@ -504,7 +506,7 @@ async def get_models(
                 # ClientError covers all aiohttp requests issues
                 log.exception(f"Client error: {str(e)}")
                 raise HTTPException(
-                    status_code=500, detail="Open WebUI: Server Connection Error"
+                    status_code=500, detail="AI Gateway: Server Connection Error"
                 )
             except Exception as e:
                 log.exception(f"Unexpected error: {e}")
@@ -565,7 +567,7 @@ async def verify_connection(
             # ClientError covers all aiohttp requests issues
             log.exception(f"Client error: {str(e)}")
             raise HTTPException(
-                status_code=500, detail="Open WebUI: Server Connection Error"
+                status_code=500, detail="AI Gateway: Server Connection Error"
             )
         except Exception as e:
             log.exception(f"Unexpected error: {e}")
@@ -689,8 +691,8 @@ async def generate_chat_completion(
                 "Content-Type": "application/json",
                 **(
                     {
-                        "HTTP-Referer": "https://openwebui.com/",
-                        "X-Title": "Open WebUI",
+                        "HTTP-Referer": WEBUI_BASE_URL,
+                        "X-Title": WEBUI_NAME,
                     }
                     if "openrouter.ai" in url
                     else {}
@@ -740,7 +742,7 @@ async def generate_chat_completion(
 
         raise HTTPException(
             status_code=r.status if r else 500,
-            detail=detail if detail else "Open WebUI: Server Connection Error",
+            detail=detail if detail else "AI Gateway: Server Connection Error",
         )
     finally:
         if not streaming and session:
@@ -817,7 +819,7 @@ async def proxy(path: str, request: Request, user=Depends(get_verified_user)):
                 detail = f"External: {e}"
         raise HTTPException(
             status_code=r.status if r else 500,
-            detail=detail if detail else "Open WebUI: Server Connection Error",
+            detail=detail if detail else "AI Gateway: Server Connection Error",
         )
     finally:
         if not streaming and session:

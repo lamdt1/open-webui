@@ -108,8 +108,9 @@ log.setLevel(SRC_LOG_LEVELS["CONFIG"])
 
 
 WEBUI_NAME = os.environ.get("WEBUI_NAME", "Open WebUI")
+WEBUI_BASE_URL = os.environ.get("WEBUI_BASE_URL", "https://aigateway.io.vn")
 
-WEBUI_FAVICON_URL = "https://openwebui.com/favicon.png"
+WEBUI_FAVICON_URL = WEBUI_BASE_URL + "/favicon.png"
 
 TRUSTED_SIGNATURE_KEY = os.environ.get("TRUSTED_SIGNATURE_KEY", "")
 
