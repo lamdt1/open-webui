@@ -21,6 +21,7 @@
 	let lang = $i18n.language;
 	let notificationEnabled = false;
 	let system = '';
+	let systemFilter = '';
 
 	let showAdvanced = false;
 
@@ -86,6 +87,7 @@
 
 		notificationEnabled = $settings.notificationEnabled ?? false;
 		system = $settings.system ?? '';
+		systemFilter = $settings.systemFilter ?? '';
 
 		requestFormat = $settings.requestFormat ?? '';
 		keepAlive = $settings.keepAlive ?? null;
@@ -241,6 +243,16 @@
 				/>
 			</div>
 
+			<div>
+				<div class=" my-2.5 text-sm font-medium">{$i18n.t('System Filter')}</div>
+				<textarea
+					bind:value={systemFilter}
+					placeholder={$i18n.t("e.g. {\"company Name\": \"companyX\", \"class Name\": \"classX\"}")}
+					class="w-full rounded-lg p-4 text-sm bg-white dark:text-gray-300 dark:bg-gray-850 outline-hidden resize-none"
+					rows="4"
+				/>
+			</div>
+
 			<div class="mt-2 space-y-3 pr-1.5">
 				<div class="flex justify-between items-center text-sm">
 					<div class="  font-medium">{$i18n.t('Advanced Parameters')}</div>
@@ -327,6 +339,7 @@
 			on:click={() => {
 				saveSettings({
 					system: system !== '' ? system : undefined,
+					systemFilter: systemFilter !== '' ? systemFilter : undefined,
 					params: {
 						stream_response: params.stream_response !== null ? params.stream_response : undefined,
 						function_calling:
