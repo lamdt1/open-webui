@@ -855,7 +855,8 @@
 									</svg>
 								</div>
 								<div class=" self-center">{$i18n.t('Account')}</div>
-							</button>						
+							</button>
+						{/if}						
 					{/each}
 				{:else}
 					<div class="text-center text-gray-500 mt-4">
